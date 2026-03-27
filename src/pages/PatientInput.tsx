@@ -36,7 +36,9 @@ export default function PatientInput() {
       toast.error('Please fill in age, weight, and height');
       return;
     }
-    const data = {
+
+    const patientData = {
+      id: editId || Date.now().toString(),
       name: form.name,
       age: Number(form.age),
       ageUnit: form.ageUnit as 'years' | 'months',
@@ -48,15 +50,26 @@ export default function PatientInput() {
       renalFunction: form.renalFunction,
       liverDisease: form.liverDisease,
     };
+
+    const existingPatients = JSON.parse(localStorage.getItem('patients') || '[]');
+    let updatedPatients;
+
     if (editId) {
-      updatePatient(editId, data);
+      updatedPatients = existingPatients.map((p: any) => (p.id === editId ? patientData : p));
       toast.success('Patient updated');
     } else {
-      const p = addPatient(data);
+      updatedPatients = [...existingPatients, patientData];
       toast.success('Patient saved');
-      navigate(`/calculator?patientId=${p.id}`);
+    }
+
+    localStorage.setItem('patients', JSON.stringify(updatedPatients));
+    console.log('Saved patient data:', updatedPatients);
+
+    if (!editId) {
+      navigate(`/calculator?patientId=${patientData.id}`);
       return;
     }
+
     navigate(-1);
   };
 

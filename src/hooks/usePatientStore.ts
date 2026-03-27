@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Patient } from '@/types/medical';
 
-const STORAGE_KEY = 'acc-dose-patients';
+const STORAGE_KEY = 'patients';
 
 export function usePatientStore() {
   const [patients, setPatients] = useState<Patient[]>(() => {
